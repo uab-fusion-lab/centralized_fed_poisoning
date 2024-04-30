@@ -29,27 +29,27 @@ def device_list(x):
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--eta', type=float, help='learning rate', default=0.01)
-parser.add_argument('--clients', type=int, help='number of clients per round', default=20)
+parser.add_argument('--clients', type=int, help='number of clients per round', default=10)
 parser.add_argument('--rounds', type=int, help='number of global rounds', default=400)
 parser.add_argument('--epochs', type=int, help='number of local epochs', default=10)
 parser.add_argument('--dataset', type=str, choices=('mnist', 'emnist', 'cifar10', 'cifar100'),
                     default='mnist', help='Dataset to use')
-parser.add_argument('--distribution', type=str, choices=('dirichlet', 'lotteryfl', 'iid'), default='dirichlet',
+parser.add_argument('--distribution', type=str, choices=('dirichlet', 'lotteryfl', 'iid'), default='iid',
                     help='how should the dataset be distributed?')
 parser.add_argument('--beta', type=float, default=0.1, help='Beta parameter (unbalance rate) for Dirichlet distribution')
-parser.add_argument('--total-clients', type=int, help='split the dataset between this many clients. Ignored for EMNIST.', default=400)
+parser.add_argument('--total-clients', type=int, help='split the dataset between this many clients. Ignored for EMNIST.', default=100)
 parser.add_argument('--min-samples', type=int, default=0, help='minimum number of samples required to allow a client to participate')
 parser.add_argument('--samples-per-client', type=int, default=20, help='samples to allocate to each client (per class, for lotteryfl, or per client, for iid)')
 parser.add_argument('--prox', type=float, default=0, help='coefficient to proximal term (i.e. in FedProx)')
 
 # Pruning and regrowth options
-parser.add_argument('--sparsity', type=float, default=0.1, help='sparsity from 0 to 1')
+parser.add_argument('--sparsity', type=float, default=0.8, help='sparsity from 0 to 1')
 parser.add_argument('--rate-decay-method', default='cosine', choices=('constant', 'cosine'), help='annealing for readjustment ratio')
 parser.add_argument('--rate-decay-end', default=None, type=int, help='round to end annealing')
-parser.add_argument('--readjustment-ratio', type=float, default=0.5, help='readjust this many of the weights each time')
+parser.add_argument('--readjustment-ratio', type=float, default=0.01, help='readjust this many of the weights each time')
 parser.add_argument('--pruning-begin', type=int, default=9, help='first epoch number when we should readjust')
 parser.add_argument('--pruning-interval', type=int, default=10, help='epochs between readjustments')
-parser.add_argument('--rounds-between-readjustments', type=int, default=10, help='rounds between readjustments')
+parser.add_argument('--rounds-between-readjustments', type=int, default=15, help='rounds between readjustments')
 parser.add_argument('--remember-old', default=False, action='store_true', help="remember client's old weights when aggregating missing ones")
 parser.add_argument('--sparsity-distribution', default='erk', choices=('uniform', 'er', 'erk'))
 parser.add_argument('--final-sparsity', type=float, default=None, help='final sparsity to grow to, from 0 to 1. default is the same as --sparsity')
@@ -62,7 +62,7 @@ parser.add_argument('--cache-test-set', default=False, action='store_true', help
 parser.add_argument('--cache-test-set-gpu', default=False, action='store_true', help='Load test sets into GPU memory')
 parser.add_argument('--test-batches', default=0, type=int, help='Number of minibatches to test on, or 0 for all of them')
 parser.add_argument('--eval-every', default=10, type=int, help='Evaluate on test set every N rounds')
-parser.add_argument('--device', default='0', type=device_list, help='Device to use for compute. Use "cpu" to force CPU. Otherwise, separate with commas to allow multi-GPU.')
+parser.add_argument('--device', default='cpu', type=device_list, help='Device to use for compute. Use "cpu" to force CPU. Otherwise, separate with commas to allow multi-GPU.')
 parser.add_argument('--min-votes', default=0, type=int, help='Minimum votes required to keep a weight')
 parser.add_argument('--no-eval', default=True, action='store_false', dest='eval')
 parser.add_argument('--grasp', default=False, action='store_true')
